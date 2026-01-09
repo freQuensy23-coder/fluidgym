@@ -22,7 +22,8 @@
 <div align="center">
     <h3>
       <a href="#-installation">Installation</a> |
-      <a href="#-gettign-started">Getting Started</a> |
+      <a href="#-getting-started">Getting Started</a> |
+      <a href="https://safe-autonomous-systems.github.io/fluidgym">Documentation</a> | 
       <a href="#-license-&-citation">License & Citation</a>
     </h3>
 </div>
@@ -83,7 +84,7 @@ make install
 
 ## Getting Started
 
-For an easy start refer to our documentation and the [`examples`](examples) directory.
+For an easy start refer to our [documentation](https://safe-autonomous-systems.github.io/fluidgym/) and the [`examples`](examples) directory.
 FluidGym provides a ```gymnasium```-like interface that can be used as follows:
 
 ```python
