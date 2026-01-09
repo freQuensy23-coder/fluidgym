@@ -202,7 +202,18 @@ class EvalCallback(BaseCallback):
         self.model.save("ckpt_latest")
 
     def _on_training_end(self) -> None:
-        pd.DataFrame(self.logged_data).to_csv("training_log.csv", index=False)
+        logged_df = pd.DataFrame(self.logged_data)
+
+        if Path("training_log.csv").exists():
+            existing_log = pd.read_csv("training_log.csv")
+            existing_log.to_csv("training_log_backup.csv", index=False)
+            combined_log = pd.concat(
+                [existing_log, logged_df], ignore_index=True
+            )
+            combined_log.to_csv("training_log.csv", index=False)
+        else:
+            logged_df.to_csv("training_log.csv", index=False)
+            
         if self.checkpoint_latest:
             self._save_model()
 
