@@ -6,7 +6,9 @@ from typing import Any
 
 import numpy as np
 import torch
+import matplotlib.pyplot as plt
 
+from fluidgym import config as global_config
 import fluidgym.simulation.pict.data.shapes as shapes
 from fluidgym.envs.multi_agent_fluid_env import MultiAgentFluidEnv
 from fluidgym.simulation import Simulation
@@ -675,3 +677,67 @@ class RBCEnvBase(MultiAgentFluidEnv, ABC):
         info["global_reward"] = global_reward
 
         return local_obs, agent_rewards, terminated, truncated, info
+
+    def plot(self, output_path: Path | None = None) -> None:
+        """Plot the environments configuration.
+        
+        Parameters
+        ----------
+        output_path: Path | None
+            Path to save the plot. If None, the current directory is used. Defaults to
+            None.
+        """
+        if output_path is None:
+            output_path = Path(".")
+
+        sensor_x = torch.linspace(0, self._L, self._n_sensors_x + 1)[:-1] + self._L / (
+            2 * self._n_sensors_x
+        )
+        sensor_y = torch.linspace(0, self._H, self._n_sensors_y + 1)[:-1] + self._H / (
+            2 * self._n_sensors_y
+        ) - self._H / 2
+        grid_x, grid_y = torch.meshgrid(sensor_x, sensor_y, indexing="ij")
+        sensor_locations = torch.stack(
+            [grid_x, grid_y], dim=-1).reshape(-1, 2).T.numpy()
+
+        colors = global_config.palette
+
+        fig = plt.figure(figsize=(10, 5))
+        ax = plt.gca()
+
+        # Plot sensors
+        plt.scatter(
+            sensor_locations[0],
+            sensor_locations[1],
+            marker="o",
+            color=colors[2],
+            s=5,
+            label="Sensors",
+        )
+
+        # Plot heaters using vertical lines
+        for i in range(1, self._n_heaters):
+            heater_x = i * self._L / self._n_heaters
+            plt.axvline(
+                x=heater_x,
+                color=colors[0],
+                linestyle="--",
+                label="Heater" if i == 0 else None,
+            )
+
+        plt.xlim(0, self._L)
+        plt.ylim(-self._H / 2, self._H / 2)
+
+        ax.set_yticks([-self._H / 2, 0, self._H / 2])
+        ax.set_yticklabels([f"{-self._H / 2:.1f}", "0.0", f"{self._H / 2:.1f}"])
+
+        ax.set_xticks([0,self._L])
+
+        aspect = round(self._aspect_ratio / torch.pi)
+        aspect_str = "" if aspect == 1 else str(aspect)
+        ax.set_xticklabels([f"0", aspect_str + r"$\pi$"])
+
+        ax.set_xlabel("L")
+        ax.set_ylabel("H")
+
+        plt.savefig(output_path / f"{self.id}.pdf")

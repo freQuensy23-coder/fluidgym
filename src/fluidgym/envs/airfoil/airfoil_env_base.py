@@ -7,6 +7,8 @@ from typing import Any
 
 import numpy as np
 import torch
+import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap, to_rgb
 
 from fluidgym.config import config as global_config
 from fluidgym.envs.airfoil.grid import (
@@ -799,34 +801,70 @@ class AirfoilEnvBase(FluidEnv):
 
         return flat_obs, reward, False, info
 
-    def plot(self) -> None:
-        """Plot the environments configuration."""
-        # First, we want to plot the domain shape
-        import matplotlib.pyplot as plt
+    def plot(self, output_path: Path | None = None) -> None:
+        """Plot the environments configuration.
+        
+        Parameters
+        ----------
+        output_path: Path | None
+            Path to save the plot. If None, the current directory is used. Defaults to
+            None.
+        """
+        if output_path is None:
+            output_path = Path(".")
 
-        plt.figure(figsize=(self.L, self.H))
+        # First, we plot the domain shape
+        fig = plt.figure(figsize=(10, 2.5))
+        ax = plt.gca()
 
         plt.xlim(0, self.render_shape[0] - 1)
         plt.ylim(0, self.render_shape[1] - 1)
 
-        plt.title("Cylinder Flow Domain")
         plt.grid()
+
+        colors = global_config.palette
+
+        rgb = to_rgb(colors[0])
+        cmap = ListedColormap([
+            (1.0, 1.0, 1.0),  
+            rgb,       
+        ])
 
         plt.imshow(
             self._airfoil_mask,
             extent=(0, self.render_shape[0], 0, self.render_shape[1]),
             origin="lower",
-            cmap="gray",
-            alpha=0.5,
+            cmap=cmap,
         )
 
         # Then, we add the sensor locations
         for sensor in self._sensors_locations.T:
             plt.scatter(
-                sensor[0], sensor[1], color="red", label="Sensor Location", s=10
+                sensor[0], sensor[1], color=colors[2], label="Sensor Location", s=5
             )
 
-        plt.savefig("airfoil_domain.png", dpi=300)
+        total_length = 1.5 + self.L
+
+        ax.set_yticks([
+            0,
+            int(self.render_shape[1] / 2),
+            self.render_shape[1] - 1,
+        ])
+        ax.set_yticklabels([f"-{self.H/2:.1f}", "0.0", f"{self.H/2:.1f}"])
+        ax.set_ylabel("H")
+
+        ax.set_xticks([
+            0,
+            int(self.render_shape[0] / total_length) * 1.5,
+            int(self.render_shape[0] / total_length) * 2.5,
+            self.render_shape[0]]
+        )
+        ax.set_xticklabels(["-1.5", "0.0", "1.0", f"{self.L}"])
+        ax.set_xlabel("L")
+
+        plt.tight_layout()
+
+        plt.savefig(output_path / f"{self.id}.pdf")
 
     @property
     def initial_domain_id(self) -> str:

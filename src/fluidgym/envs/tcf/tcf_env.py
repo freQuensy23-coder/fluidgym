@@ -7,7 +7,9 @@ from typing import Any
 import numpy as np
 import pandas as pd
 import torch
+import matplotlib.pyplot as plt
 
+from fluidgym.config import config as global_config
 from fluidgym.envs.fluid_env import EnvMode, Stats
 from fluidgym.envs.multi_agent_fluid_env import MultiAgentFluidEnv
 from fluidgym.envs.tcf.grid import (
@@ -751,9 +753,45 @@ class TCF3DBottomEnv(MultiAgentFluidEnv):
 
         return flat_obs, reward, False, info
 
-    def plot(self) -> None:
-        """Plot the environments configuration."""
-        raise NotImplementedError
+    def plot(self, output_path: Path | None = None) -> None:
+        """Plot the environments configuration.
+        
+        Parameters
+        ----------
+        output_path: Path | None
+            Path to save the plot. If None, the current directory is used. Defaults to
+            None.
+        """
+        if output_path is None:
+            output_path = Path(".")
+
+        y_sensor = self._y_wall_to_y(self._y_obs_wall)
+
+        colors = global_config.palette
+
+        fig = plt.figure(figsize=(10, 5))
+        ax = plt.gca()
+
+        # add vertical line for y_sensor as dotted line
+        plt.axhline(y=y_sensor, color=colors[2], linestyle="dotted", linewidth=2)
+        plt.axhline(y=-y_sensor, color=colors[2], linestyle="dotted", linewidth=2)
+
+        plt.xlim(0, self._L)
+        plt.ylim(-self._H / 2, self._H / 2)
+
+        ax.set_yticks([-self._H / 2, 0, self._H / 2])
+        ax.set_yticklabels([f"{-self._H / 2:.1f}", "0.0", f"{self._H / 2:.1f}"])
+
+        ax.set_xticks([0, self._L])
+
+        aspect = round(self._L / torch.pi)
+        aspect_str = "" if aspect == 1 else str(aspect)
+        ax.set_xticklabels([f"0", aspect_str + r"$\pi$"])
+
+        ax.set_xlabel("L")
+        ax.set_ylabel("H")
+
+        plt.savefig(output_path / f"{self.id}.pdf")
 
     @property
     def initial_domain_id(self) -> str:
@@ -766,7 +804,7 @@ class TCF3DBottomEnv(MultiAgentFluidEnv):
     @property
     def id(self) -> str:
         """Unique identifier for the environment."""
-        return f"ChannelFlow3D_Re{int(self._re_wall)}"
+        return f"ChannelFlow3D_Re{int(self._re_wall)}_L{self._L:.2f}"
 
     def _randomize_domain(self) -> None:
         velocity_noise = 0.01

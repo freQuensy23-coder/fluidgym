@@ -328,39 +328,6 @@ class RBCEnv2D(RBCEnvBase):
 
         return self.nu_ref - local_nu
 
-    def plot(self) -> None:
-        """Plot the environments configuration."""
-        import matplotlib.pyplot as plt
-
-        plt.figure(figsize=(6, 4))
-
-        # Plot sensors
-        sensor_locs = self._sensor_locations.cpu().numpy()
-        plt.scatter(
-            sensor_locs[0],
-            sensor_locs[1],
-            marker="o",
-            color="black",
-            s=10,
-            label="Sensors",
-        )
-
-        # Plot heaters using vertical lines
-        x_width = self.render_shape[0]
-        for i in range(1, self._n_heaters):
-            heater_x = round(i * x_width / self._n_heaters)
-            plt.axvline(
-                x=heater_x,
-                color="red",
-                linestyle="--",
-                label="Heater" if i == 0 else None,
-            )
-
-        plt.xlim(0, x_width)
-        plt.ylim(0, self.render_shape[1])
-
-        plt.savefig("sensors_heaters.png", dpi=300)
-
     def plot_actuation(
         self,
         action: torch.Tensor,

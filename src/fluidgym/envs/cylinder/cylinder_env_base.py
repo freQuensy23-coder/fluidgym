@@ -7,6 +7,8 @@ from typing import Any
 
 import numpy as np
 import torch
+import matplotlib.patches as patches
+import matplotlib.pyplot as plt
 
 from fluidgym import config as fluidgym_config
 from fluidgym.envs.cylinder.grid import make_vortex_street_domain
@@ -786,10 +788,17 @@ class CylinderEnvBase(FluidEnv, ABC):
 
         return flat_obs, reward, False, info
 
-    def plot(self) -> None:
-        """Plot the cylinder flow domain with sensor locations."""
-        import matplotlib.patches as patches
-        import matplotlib.pyplot as plt
+    def plot(self, output_path: Path | None = None) -> None:
+        """Plot the environments configuration.
+        
+        Parameters
+        ----------
+        output_path: Path | None
+            Path to save the plot. If None, the current directory is used. Defaults to
+            None.
+        """
+        if output_path is None:
+            output_path = Path(".")
 
         colors = fluidgym_config.palette
 
@@ -807,17 +816,23 @@ class CylinderEnvBase(FluidEnv, ABC):
         ax.add_artist(circle)
         ax.set_aspect("equal")
 
+        ax.set_xlabel("L")
+        ax.set_ylabel("H")
+
+        ax.set_xticks(np.linspace(-2, self.L, 13))
+        ax.set_xticklabels([f"{int(x)}" for x in np.linspace(-2, self.L, 13)])
+
         # We want domain coordinates
         sensor_locations = self._get_sensor_locations_2d()
 
         # Then, we add the sensor locations
         for sensor in sensor_locations.T:
             plt.scatter(
-                sensor[0], sensor[1], color=colors[2], label="Sensor Location", s=2
+                sensor[0], sensor[1], color=colors[2], label="Sensors", s=5
             )
 
         plt.tight_layout()
-        plt.savefig("environment.pdf")
+        plt.savefig(output_path / f"{self.id}.pdf")
 
     @property
     def initial_domain_id(self) -> str:

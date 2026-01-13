@@ -918,8 +918,15 @@ class FluidEnv(ABC):
             self._logger.info(f"GIF saved to {_filename}")
 
     @abstractmethod
-    def plot(self) -> None:
-        """Plot the environments configuration."""
+    def plot(self, output_path: Path | None = None) -> None:
+        """Plot the environments configuration.
+        
+        Parameters
+        ----------
+        output_path: Path | None
+            Path to save the plot. If None, the current directory is used. Defaults to
+            None.
+        """
         raise NotImplementedError
 
     @property
