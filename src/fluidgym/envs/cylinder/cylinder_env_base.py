@@ -191,6 +191,9 @@ class CylinderEnvBase(FluidEnv, ABC):
             self._bottom_block_idx,
             self._vortex_street_block_idx,
         ) = range(5)
+        self.__last_control = torch.zeros(
+            (1,), device=self._cuda_device, requires_grad=False
+        )
         self._sensors_locations = self._get_sensor_locations()
         self._cylinder_mask = self._get_cylinder_mask()
 
