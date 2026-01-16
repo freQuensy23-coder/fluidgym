@@ -44,7 +44,7 @@ pip install torch --index-url https://download.pytorch.org/whl/cu128
 pip install fluidgym
 ```
 
-### 🐳 Using Docker
+### 🐳 Using Docker (coming soon)
 
 Instead of installing FluidGym you can use one of our Docker containers:
 
