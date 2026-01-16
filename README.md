@@ -14,7 +14,7 @@
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.9-EE4C2C?logo=pytorch&logoColor=white)
 ![CUDA](https://img.shields.io/badge/CUDA-12.8-%2376B900)
 ![License](https://img.shields.io/badge/License-MIT-orange)
-[![Linters](https://github.com/safe-autonomous-systems/rl-fluid-bench/actions/workflows/linters.yml/badge.svg)](https://github.com/safe-autonomous-systems/rl-fluid-bench/actions/workflows/linters.yml)
+[![Linters](https://github.com/safe-autonomous-systems/fluidgym/actions/workflows/linters.yml/badge.svg?branch=main)](https://github.com/safe-autonomous-systems/fluidgym/actions/workflows/linters.yml)
     
 </div>
 
