@@ -2,7 +2,6 @@ SRC_DIR=src/fluidgym
 PICT_DIR=src/fluidgym/simulation/pict
 EXAMPLES_DIR=examples
 TEST_DIR=tests
-COVERAGE_REPORT=term-missing
 
 PYTHON ?= python
 PYTEST ?= python -m pytest
@@ -38,21 +37,19 @@ pre-commit:
 
 .PHONY: format
 format:
-	isort ${SRC_DIR}
-	ruff format
+	$(RUFF) format
 
 .PHONY: test
 test:
-	pytest --cov=$(SRC_DIR) --cov-report=$(COVERAGE_REPORT) $(TEST_DIR)
-
-# HTML coverage report
-.PHONY: coverage-html
-coverage-html:
-	pytest --cov=$(SRC_DIR) --cov-report=html $(TEST_DIR)
+	$(PYTEST) $(TEST_DIR)
 
 .PHONY: install
 install: clean build
-	pip install dist/fluidgym-*.whl
+	$(PIP) install dist/fluidgym-*.whl
+
+.PHONY: install-dev
+install-dev:
+	PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cu128 $(PIP) install -e ".[dev]"
 
 .PHONY: clean
 clean:
