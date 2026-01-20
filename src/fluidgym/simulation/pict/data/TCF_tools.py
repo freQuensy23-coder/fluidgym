@@ -583,7 +583,7 @@ class VelocityStats:
             # ax.set_title(name)
             ax.set_xlabel("$y/\\delta$")
             ax.set_ylabel(
-                "$\overline{(u_i'^+)^%d} / \overline{(u_i'^+)^2}^{%d/2}$"
+                "$\\overline{(u_i'^+)^%d} / \\overline{(u_i'^+)^2}^{%d/2}$"
                 % (order, order)
             )
             # ax.set_ylabel("$U^+$")
