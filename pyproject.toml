@@ -1,6 +1,6 @@
 [project]
 name = "fluidgym"
-dynamic = ["version"]
+version = "0.0.2"
 description = "Plug-and-Play Benchmarking of Reinforcement Learning Algorithms for Large-Scale Flow Control"
 readme = "README.md"
 license = { file = "LICENSE" }
