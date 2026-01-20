@@ -27,22 +27,29 @@ check: check-ruff check-mypy
 docs:
 	cd docs && $(MAKE) html && cd ..
 
+.PHONY: upload-docs
+upload-docs: docs
+	ghp-import -n -p -f docs/build/html
+
 .PHONY: pre-commit
 pre-commit:
 	$(PRECOMMIT) run --all-files || :
 
 .PHONY: format
 format:
-	isort ${SRC_DIR}
-	ruff format
+	$(RUFF) format
 
 .PHONY: test
 test:
-	pytest $(TEST_DIR)
+	$(PYTEST) $(TEST_DIR)
 
 .PHONY: install
 install: clean build
-	pip install dist/fluidgym-*.whl
+	$(PIP) install dist/fluidgym-*.whl
+
+.PHONY: install-dev
+install-dev:
+	PIP_EXTRA_INDEX_URL=https://download.pytorch.org/whl/cu128 $(PIP) install -e ".[dev]"
 
 .PHONY: clean
 clean:
