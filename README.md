@@ -8,10 +8,10 @@
 </p>
 
 <p align="center">
-  <img src="docs/build/html/_static/img/gifs/cylinder.gif" style="width:24%; max-width:220px; height:auto;" />
-  <img src="docs/build/html/_static/img/gifs/rbc.gif" style="width:24%; max-width:220px; height:auto;" />
-  <img src="docs/build/html/_static/img/gifs/airfoil.gif" style="width:24%; max-width:220px; height:auto;" />
-  <img src="docs/build/html/_static/img/gifs/tcf.gif" style="width:24%; max-width:220px; height:auto;" />
+  <img src="docs/build/html/_static/img/gifs/cylinder.gif" style="display:inline-block; width:24%; max-width:220px; height:auto; vertical-align:top;" />
+  <img src="docs/build/html/_static/img/gifs/rbc.gif" style="display:inline-block; width:24%; max-width:220px; height:auto; vertical-align:top;" />
+  <img src="docs/build/html/_static/img/gifs/airfoil.gif" style="display:inline-block; width:24%; max-width:220px; height:auto; vertical-align:top;" />
+  <img src="docs/build/html/_static/img/gifs/tcf.gif" style="display:inline-block; width:24%; max-width:220px; height:auto; vertical-align:top;" />
 </p>
 
 <div align="center">
